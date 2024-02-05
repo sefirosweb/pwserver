@@ -4,8 +4,8 @@ This is a docker server for the game Palworld. It is a simple server that can be
 ## Usage
 Install docker-compose and run the following command:
 ```bash
-docker-compose up &&
-docker-compose exec pserver /home/pwserver/pwserver start
+mkdir serverfiles &&
+docker-compose up
 ```
 
 Check and edit docker-compose.yml if you need change the port or volume.

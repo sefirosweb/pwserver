@@ -1,6 +1,7 @@
 # Base image
 FROM ubuntu:22.04
 
+WORKDIR /data
 # Install dependencies
 RUN dpkg --add-architecture i386
 RUN apt update
@@ -20,7 +21,12 @@ USER pwserver
 WORKDIR /home/pwserver
 RUN curl -Lo linuxgsm.sh https://linuxgsm.sh && chmod +x linuxgsm.sh && bash linuxgsm.sh pwserver
 RUN /home/pwserver/pwserver auto-install
-RUN /home/pwserver/pwserver start
+RUN mv /home/pwserver/serverfiles /home/pwserver/serverfiles-backup
+
+# Copy the server file entrypoint
+COPY --chown=pwserver:pwserver entrypoint.sh /home/pwserver/entrypoint.sh
+RUN chmod +x /home/pwserver/entrypoint.sh
+
 
 EXPOSE 8211
 EXPOSE 27015
@@ -30,5 +36,4 @@ EXPOSE 27015
 # */30 * * * * /home/pwserver/pwserver update > /dev/null 2>&1
 # 0 0 * * 0 /home/pwserver/pwserver update-lgsm > /dev/null 2>&1
 
-# Create dummy state
-CMD [ "tail", "-f", "/dev/null" ]
+CMD ["/home/pwserver/entrypoint.sh"]
